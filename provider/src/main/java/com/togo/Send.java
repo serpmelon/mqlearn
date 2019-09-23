@@ -36,7 +36,7 @@ public class Send {
 
             boolean durable = true;
             channel.queueDeclare(QUEUE_NAME, durable, false, false, null);
-            String message = String.join(" ", "Dmesaage.......");
+            String message = String.join(" ", "dMessage.......");
             channel.basicPublish("", QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
 
             System.out.println(" [x] Sent '" + message + "'");
