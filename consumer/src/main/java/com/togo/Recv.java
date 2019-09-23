@@ -2,7 +2,6 @@ package com.togo;
 
 import com.rabbitmq.client.*;
 
-import java.io.IOException;
 
 /**
  * <p></p>
@@ -20,7 +19,7 @@ import java.io.IOException;
  */
 public class Recv {
 
-    private static final String QUEUE_NAME = "hello";
+    private static final String QUEUE_NAME = "task_queue";
 
     public static void main(String[] args) throws Exception {
 
@@ -29,15 +28,37 @@ public class Recv {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.queueDeclare(QUEUE_NAME,false, false, false, null);
+        int prefetchCount = 1;
+        // 一次只发送一个信息给消费者，消费者在处理完之前不回再被发送信息
+        channel.basicQos(prefetchCount);
+        boolean durable = true;
+        channel.queueDeclare(QUEUE_NAME,durable, false, false, null);
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 
             String message = new String(delivery.getBody(), "UTF-8");
             System.out.println(" [x] Received '" + message + "'");
+
+            try {
+                doWork(message);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                System.out.println(" [x] Done");
+            }
         };
 
-        channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> {});
+        boolean autoAck = false;
+        channel.basicConsume(QUEUE_NAME, autoAck, deliverCallback, consumerTag -> {});
+    }
+
+    private static void doWork(String task) throws InterruptedException {
+
+        for (char ch : task.toCharArray()) {
+
+            if (ch == '.')
+                Thread.sleep(1000);
+        }
     }
 }
