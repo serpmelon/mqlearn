@@ -1,0 +1,4 @@
+/consumer/target/
+/.idea/
+/provider/target/classes/com/togo/
+/rabbit-client/target/classes/com/togo/
