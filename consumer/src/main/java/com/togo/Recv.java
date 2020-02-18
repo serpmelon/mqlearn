@@ -39,9 +39,11 @@ public class Recv {
 
             String message = new String(delivery.getBody(), "UTF-8");
             System.out.println(" [x] Received '" + message + "'");
+            System.out.println("tag " + consumerTag);
 
             try {
                 doWork(message);
+                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
@@ -57,8 +59,10 @@ public class Recv {
 
         for (char ch : task.toCharArray()) {
 
-            if (ch == '.')
+            if (ch == '.') {
+                System.out.println("handle msg...");
                 Thread.sleep(1000);
+            }
         }
     }
 }

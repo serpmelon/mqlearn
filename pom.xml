@@ -11,6 +11,8 @@
     <modules>
         <module>provider</module>
         <module>consumer</module>
+        <module>rabbit-client</module>
+        <module>rocket</module>
     </modules>
 
 

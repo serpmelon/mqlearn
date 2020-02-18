@@ -6,6 +6,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.MessageProperties;
 
 import java.io.IOException;
+import java.util.Scanner;
+import java.util.Stack;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -30,14 +32,14 @@ public class Send {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
-
         try (Connection connection = factory.newConnection();
-             Channel channel = connection.createChannel();) {
+             Channel channel = connection.createChannel()) {
 
             boolean durable = true;
             channel.queueDeclare(QUEUE_NAME, durable, false, false, null);
             String message = String.join(" ", "dMessage.......");
-            channel.basicPublish("", QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+            channel.exchangeDeclare("mind", "direct");
+            channel.basicPublish("mind", "", MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
 
             System.out.println(" [x] Sent '" + message + "'");
         }

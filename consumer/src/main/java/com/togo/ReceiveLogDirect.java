@@ -48,6 +48,7 @@ public class ReceiveLogDirect {
 
             try {
                 doWork(message);
+                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
@@ -57,6 +58,7 @@ public class ReceiveLogDirect {
 
         boolean autoAck = false;
         channel.basicConsume(queueName, autoAck, deliverCallback, consumerTag -> {});
+
     }
 
     private static void doWork(String task) throws InterruptedException {

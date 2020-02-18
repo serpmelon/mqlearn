@@ -10,5 +10,10 @@
         <module name="provider" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ddd" target="1.5" />
+      <module name="eee" target="1.5" />
+      <module name="sss" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
