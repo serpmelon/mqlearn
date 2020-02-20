@@ -2,6 +2,7 @@ package com.togo;
 
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
@@ -19,7 +20,7 @@ public class SimpleProducer {
         producer.setNamesrvAddr("localhost:9876");
         producer.start();
 
-        Message msg = new Message("topicTest" /* Topic */,
+        Message msg = new Message("taiynTopic" /* Topic */,
                 ("Hello RocketMQ ").getBytes(RemotingHelper.DEFAULT_CHARSET) /* Message body */
         );
 
@@ -29,9 +30,29 @@ public class SimpleProducer {
         producer.shutdown();
     }
 
+    public void asyncSend() throws Exception {
+
+        DefaultMQProducer producer = new DefaultMQProducer("group_two");
+        producer.setNamesrvAddr("localhost:9876");
+        producer.start();
+        producer.setRetryTimesWhenSendAsyncFailed(0);
+
+        Message message = new Message("Tp", "TagA", "Order", "Hello".getBytes());
+        producer.send(message, new SendCallback() {
+            public void onSuccess(SendResult sendResult) {
+                System.out.println(sendResult);
+            }
+
+            public void onException(Throwable e) {
+                System.out.println(e);
+            }
+        });
+    }
+
     public static void main(String[] args) throws Exception {
 
         SimpleProducer simpleProducer = new SimpleProducer();
         simpleProducer.syncSend();
+        simpleProducer.asyncSend();
     }
 }
