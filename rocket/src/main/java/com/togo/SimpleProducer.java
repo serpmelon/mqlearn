@@ -14,45 +14,62 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
  **/
 public class SimpleProducer {
 
+//    private static DefaultMQProducer producer = new DefaultMQProducer("group_one");
+//
+//    static {
+//        try {
+//            producer.setNamesrvAddr("localhost:9876");
+//            producer.start();
+//        } catch (MQClientException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     public void syncSend() throws Exception {
 
-        DefaultMQProducer producer = new DefaultMQProducer("group_one");
-        producer.setNamesrvAddr("localhost:9876");
-        producer.start();
+        DefaultMQProducer producer = new DefaultMQProducer("please_rename_unique_group_name");
+        try {
 
-        Message msg = new Message("taiynTopic" /* Topic */,
-                ("Hello RocketMQ ").getBytes(RemotingHelper.DEFAULT_CHARSET) /* Message body */
-        );
+            // Specify name server addresses.
+            producer.setNamesrvAddr("localhost:9876");
+            producer.setSendMsgTimeout(30000);
+            //Launch the instance.
+            producer.start();
+            Message msg = new Message("TopicTest" /* Topic */,
+                    "TagA" /* Tag */,
+                    ("Hello RocketMQ ").getBytes(RemotingHelper.DEFAULT_CHARSET) /* Message body */
+            );
 
-        SendResult sendResult = producer.send(msg);
-        System.out.println(sendResult);
-
-        producer.shutdown();
+            SendResult sendResult = producer.send(msg);
+            System.out.println(sendResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            producer.shutdown();
+        }
     }
 
     public void asyncSend() throws Exception {
 
-        DefaultMQProducer producer = new DefaultMQProducer("group_two");
-        producer.setNamesrvAddr("localhost:9876");
-        producer.start();
-        producer.setRetryTimesWhenSendAsyncFailed(0);
-
-        Message message = new Message("Tp", "TagA", "Order", "Hello".getBytes());
-        producer.send(message, new SendCallback() {
-            public void onSuccess(SendResult sendResult) {
-                System.out.println(sendResult);
-            }
-
-            public void onException(Throwable e) {
-                System.out.println(e);
-            }
-        });
+//        producer.setRetryTimesWhenSendAsyncFailed(0);
+//
+//        Message message = new Message("Tp", "TagA", "Order", "Hello".getBytes());
+//        producer.send(message, new SendCallback() {
+//            public void onSuccess(SendResult sendResult) {
+//                System.out.println(sendResult);
+//            }
+//
+//            public void onException(Throwable e) {
+//                System.out.println(e);
+//            }
+//        });
     }
 
     public static void main(String[] args) throws Exception {
 
         SimpleProducer simpleProducer = new SimpleProducer();
         simpleProducer.syncSend();
-        simpleProducer.asyncSend();
+//        simpleProducer.asyncSend();
+
+//        simpleProducer.shutdown();
     }
 }
