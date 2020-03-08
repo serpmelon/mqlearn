@@ -1,0 +1,17 @@
+
+server:
+  port: 9024
+  servlet:
+    context-path: /wx
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+logging:
+  level:
+    mapping : debug
