@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 public class MQListener {
 
     @RabbitListener(containerFactory = "listenerFactoryWithManualAck",
-            queues = "task_queue")
+            queues = "q.send")
     public void consume(Message message, Channel channel,
                         @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
 

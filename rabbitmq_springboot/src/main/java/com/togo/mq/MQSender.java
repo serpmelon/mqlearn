@@ -41,7 +41,7 @@ public class MQSender {
     @Autowired
     private AmqpTemplate myMQTemplate;
 
-    private void send(String exchangeName, String routingKey, Object object) {
+    public void send(String exchangeName, String routingKey, Object object) {
 
         myMQTemplate.convertAndSend(exchangeName, routingKey, object);
     }
