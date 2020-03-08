@@ -55,13 +55,6 @@ public class RabbitConfig {
         return connectionFactory;
     }
 
-    /**
-     * @return org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory
-     * @Author taiyn
-     * @Description 新mq集群监听factory
-     * @Date 2:40 下午 2020/2/26
-     * @Param [newRentConnectionFactory]
-     **/
     @Bean(value = "listenerFactoryWithAutoAck")
     public SimpleRabbitListenerContainerFactory listenerFactoryWithAutoAck(@Qualifier("connectionFactory") ConnectionFactory newRentConnectionFactory) {
 
@@ -106,7 +99,7 @@ public class RabbitConfig {
     }
 
     @Bean
-    public AmqpTemplate rentMQTemplate(@Qualifier("connectionFactory") ConnectionFactory connectionFactory) {
+    public AmqpTemplate myMQTemplate(@Qualifier("connectionFactory") ConnectionFactory connectionFactory) {
 
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setRetryTemplate(retryTemplate());

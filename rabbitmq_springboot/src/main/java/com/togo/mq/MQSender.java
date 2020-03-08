@@ -2,6 +2,7 @@ package com.togo.mq;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -38,15 +39,11 @@ import org.springframework.stereotype.Component;
 public class MQSender {
 
     @Autowired
-    private AmqpTemplate rentMQTemplate;
+    private AmqpTemplate myMQTemplate;
 
-    private void send(ExchangeEnums exchangeEnums, RoutingKeyEnums routingKeyEnums, Object object, AmqpTemplate amqpTemplate) {
-        send(exchangeEnums.getExchangeName(), routingKeyEnums, object, amqpTemplate);
-    }
+    private void send(String exchangeName, String routingKey, Object object) {
 
-    private void send(String exchangeName, RoutingKeyEnums routingKeyEnums, Object object, AmqpTemplate amqpTemplate) {
-
-        amqpTemplate.convertAndSend(exchangeName, routingKeyEnums.getValue(), object);
+        myMQTemplate.convertAndSend(exchangeName, routingKey, object);
     }
 
 
