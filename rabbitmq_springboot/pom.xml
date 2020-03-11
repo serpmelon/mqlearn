@@ -11,11 +11,14 @@
 
     <artifactId>rabbitmq_springboot</artifactId>
 
+    <properties>
+        <springboot.version>2.1.8.RELEASE</springboot.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.1.8.RELEASE</version>
+            <version>${springboot.version}</version>
         </dependency>
 
         <dependency>
@@ -32,7 +35,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.1.8.RELEASE</version>
+            <version>${springboot.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -45,7 +48,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
-            <version>2.1.8.RELEASE</version>
+            <version>${springboot.version}</version>
         </dependency>
     </dependencies>
 

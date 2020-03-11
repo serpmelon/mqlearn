@@ -1,14 +1,12 @@
 package com.togo.mq.client;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import sun.tools.jconsole.Worker;
 
-import javax.crypto.spec.SecretKeySpec;
+import com.togo.mq.client.entity.Frame;
+import com.togo.mq.client.entity.MethodFrame;
+
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.security.Key;
 
 /**
  * @Author taiyn
@@ -20,9 +18,11 @@ public class TigerConnection {
     private String host = "127.0.0.1";
     private int port = 5672;
 
-    private int major = 2;
+    private int major = 0;
     private int minor = 9;
     private int revision = 1;
+
+    private boolean open = false;
 
     private Socket socket;
     private DataOutputStream outputStream;
@@ -30,6 +30,7 @@ public class TigerConnection {
 
     public void tcpConnect() {
 
+        System.out.println("TCP connect");
         try {
             socket = new Socket();
             socket.connect(new InetSocketAddress(host, port));
@@ -42,6 +43,7 @@ public class TigerConnection {
 
     public void sendHeader() throws IOException {
 
+        System.out.println("Sending header~");
         outputStream.write("AMQP".getBytes());
         outputStream.write(0);
         outputStream.write(major);
@@ -50,18 +52,63 @@ public class TigerConnection {
         outputStream.flush();
     }
 
-    public void connectionStartOk() {}
+    public void startReceiveThread() {
 
-    public static void main(String[] args)throws IOException {
-//        TigerConnection tigerConnection = new TigerConnection();
-//        tigerConnection.tcpConnect();
-//        tigerConnection.sendHeader();
+        System.out.println("Start receive thread");
+        open = true;
+        Thread thread = new Thread(() -> {
 
+            while (open) {
 
-        Key key = new SecretKeySpec("secret".getBytes(), SignatureAlgorithm.HS256.getJcaName());
-        String jws = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYWhhIn0.gbIjVFaWcwLQFptoxe0PVsFnI6JA05feQrCLoJjwp8U";
-        String body = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jws).toString();
-        System.out.println(body);
+                try {
+                    Frame frame = read(inputStream);
+//                    System.out.println(frame);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    open = false;
+                }
+            }
+        });
 
+        thread.start();
+    }
+
+    private Frame read(DataInputStream inputStream) throws IOException {
+
+        int type = inputStream.readUnsignedByte();
+        int channel = inputStream.readUnsignedShort();
+        int payloadSize = inputStream.readInt();
+        byte[] payload = new byte[payloadSize];
+        inputStream.readFully(payload);
+
+        return new Frame(type, channel, payload);
+    }
+
+    public void connectionStartOk() throws IOException {
+
+//        MethodFrame methodFrame = MethodFrame.builder()
+//                .classId(10)
+//                .methodId(11)
+//                .build();
+
+        System.out.println("Sending startOk~");
+        outputStream.write(1);
+        outputStream.write(0);
+        outputStream.write(40);
+        outputStream.write(10);
+        outputStream.write(11);
+        outputStream.write(206);
+        outputStream.flush();
+    }
+
+    public static void main(String[] args) throws IOException {
+        TigerConnection tigerConnection = new TigerConnection();
+        tigerConnection.tcpConnect();
+
+        tigerConnection.startReceiveThread();
+        tigerConnection.sendHeader();
+        tigerConnection.connectionStartOk();
+
+        tigerConnection.sendHeader();
     }
 }

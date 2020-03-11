@@ -45,6 +45,4 @@ public class MQSender {
 
         myMQTemplate.convertAndSend(exchangeName, routingKey, object);
     }
-
-
 }

@@ -27,5 +27,7 @@ public class MQListener {
 
         String msg = new String(message.getBody(), StandardCharsets.UTF_8);
         System.out.println("message body: " + msg);
+        channel.basicAck(tag, false);
+        channel.basicReject(tag, true);
     }
 }

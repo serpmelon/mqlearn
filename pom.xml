@@ -13,7 +13,12 @@
         <module>consumer</module>
         <module>rabbit-client</module>
         <module>rocket</module>
+        <module>rabbitmq_springboot</module>
     </modules>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
 </project>

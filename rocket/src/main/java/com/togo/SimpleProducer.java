@@ -46,6 +46,8 @@ public class SimpleProducer {
             e.printStackTrace();
             producer.shutdown();
         }
+
+        producer.shutdown();
     }
 
     public void asyncSend() throws Exception {
