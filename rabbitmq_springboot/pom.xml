@@ -12,7 +12,7 @@
     <artifactId>rabbitmq_springboot</artifactId>
 
     <properties>
-        <springboot.version>2.1.8.RELEASE</springboot.version>
+        <springboot.version>2.5.12</springboot.version>
     </properties>
     <dependencies>
         <dependency>
